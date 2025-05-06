@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Scan QR to mail</title>
+    <style>
+      body {
+        text-align: center;
+        margin-top: 50px;
+      }
+      #qrcode {
+        margin-top: 20px;
+      }
+      #downloadBtn {
+        margin-top: 20px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Scan QR to Mail</h1>
+    <input type="text" id="text" placeholder="Enter text or URL" />
+    <button onclick="generateQRCode()">Generate QR Code</button>
+
+    <div id="qrcode"></div>
+
+    <button id="downloadBtn" onclick="downloadQRCode()">
+      Download QR Code
+    </button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+      let qr;
+
+      function generateQRCode() {
+        const qrContainer = document.getElementById("qrcode");
+        qrContainer.innerHTML = ""; // clear previous QR
+        const email = document.getElementById("text").value.trim(); // Get the email input
+
+        if (email) {
+          const mailtoLink = `mailto:${email}?subject=Hello&body=I%20wanted%20to%20contact%20you!`;
+
+          new QRCode(qrContainer, {
+            text: mailtoLink,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H,
+          });
+
+          document.getElementById("downloadBtn").style.display = "inline-block";
+        } else {
+          alert("Please enter an email address!");
+        }
+      }
+
+      // Show download button after QR is generated
+      document.getElementById("downloadBtn").style.display = "inline-block";
+
+      function downloadQRCode() {
+        // Get the canvas element inside the QR code container
+        const img =
+          document.querySelector("#qrcode img") ||
+          document.querySelector("#qrcode canvas");
+        if (img) {
+          const link = document.createElement("a");
+          link.href = img.src || img.toDataURL();
+          link.download = "qrcode.png";
+          link.click();
+        } else {
+          alert("Please generate a QR Code first!");
+        }
+      }
+    </script>
+  </body>
+</html>
